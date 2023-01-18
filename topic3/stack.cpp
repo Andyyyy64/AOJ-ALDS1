@@ -1,52 +1,55 @@
 #include <iostream>
 using namespace std;
-
-int rpn(char pol_f[1000]);
+char rpn(char pol_f[100]);
 
 int c2i(char c);
-int str2i(char str[1000]);
+char i2c(int i);
 
-void push(int stack[1000], int *sp, int n);
-int pop(int stack[1000], int *sp);
+void push(char stack[100], int *sp, char c);
+char pop(char stack[100], int *sp);
+
 
 int main(void)
 {
-    char pol_f[1000];
+    char pol_f[100];
+    char dmy;
 
-    cin.getline(pol_f, 1000);  // 空白を含めて一行を読み込む
+    cin >> pol_f;
+    cin >> dmy;
+    //scanf("%s%c", pol_f, &dmy); 
 
-    cout << rpn(pol_f) << endl;
+    cout << c2i(rpn(pol_f)) << endl;
+    //printf("Ans : %d\n", c2i(rpn(pol_f)));
 
     return 0;
 }               
 
-int rpn(char pol_f[1000])
+char rpn(char pol_f[100])
 {
-    int stack[1000];
+    char stack[100];
     int sp = 0;
     int i;
-    int first, second;
+    char first, second;
 
     for ( i = 0; pol_f[i] != '\0'; i++) {
-        if ( '9' >= pol_f[i] && pol_f[i] >= '0' ) {
-            push(stack,&sp,str2i(pol_f + i));
-            while (pol_f[i + 1] >= '0' && pol_f[i + 1] <= '9') {
-                i++;
-            }
+        if ( '9' >= pol_f[i] && pol_f[i] >= '1' ) {
+            push(stack,&sp,pol_f[i]);
+
         } else {
             if (pol_f[i] == '+') {
                 second = pop(stack, &sp);
                 first = pop(stack, &sp);
-                push(stack, &sp, first + second);
+                push(stack, &sp, i2c(c2i(first) + c2i(second)));
             } else if  (pol_f[i] == '-') {
                     second = pop(stack, &sp);
                 first = pop(stack, &sp);
-                push(stack, &sp, first - second);
+                push(stack, &sp, i2c(c2i(first) - c2i(second)));
+
             } else if  (pol_f[i] == '*') {
-                 second = pop(stack, &sp);
+                    second = pop(stack, &sp);
                 first = pop(stack, &sp);
-                push(stack, &sp, first * second);
-            }
+                push(stack, &sp, i2c(c2i(first) * c2i(second)));
+            } 
         }
     }
 
@@ -58,22 +61,19 @@ int c2i(char c)
     return c - '0';
 }
 
-int str2i(char str[1000])
+char i2c(int i)
 {
-    int i;
-    int n = 0;
-    for (i = 0; str[i] >= '0' && str[i] <= '9'; i++) {
-        n = n * 10 + c2i(str[i]);
-    }
-    return n;
+    return '0' + i;
 }
 
-void push(int stack[1000], int *sp, int n)
+
+void push(char stack[100], int *sp, char c)
 {
-    stack[(*sp)++] = n;
+    stack[(*sp)++] = c;
 }
 
-int pop(int stack[1000], int *sp)
+char pop(char stack[100], int *sp)
 {
-    return stack[--*sp];
+    return stack[--*sp];    
+    
 }
