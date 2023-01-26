@@ -1,57 +1,37 @@
 #include <iostream>
 #include <queue>
+using namespace std;
 
-// タスクを表す構造体
-struct Task {
-  std::string name;   // タスク名
-  int runtime;        // 実行時間
-  int remaining;      // 残り実行時間
+struct Prosess {
+  string name;
+  int time;
+  int finish_time;
 };
-
-// ラウンドロビンスケジューリングをシミュレートする関数
-void schedule(std::queue<Task>& tasks, int quantum, int& time) {
-  // 全てのタスクを実行するまで繰り返す
-  while (!tasks.empty()) {
-    // タスクを取り出す
-    Task task = tasks.front();
-    tasks.pop();
-
-    // タスクを実行する
-    if (task.remaining > quantum) {
-      // タスクがクォンタムを超えている場合
-      task.remaining -= quantum;
-      time += quantum;
-      // タスクをキューに戻す
-      tasks.push(task);
-    } else {
-      // タスクがクォンタム以下の場合
-      time += task.remaining;
-      // タスクを完了させる
-      std::cout << task.name << " " << time << std::endl;
-    }
-  }
-}
 
 int main() {
   int n, q;
-  std::cin >> n >> q;
-
-  // タスクを格納するキューを作成
-  std::queue<Task> tasks;
-
-  // タスクの情報を読み込む
+  cin >> n >> q;
+  queue<Prosess> A;
   for (int i = 0; i < n; i++) {
-    std::string name;
+    string name;
     int time;
-    std::cin >> name >> time;
-    tasks.push({name, time, time});
+    cin >> name >> time;
+    Prosess p = {name, time};
+    A.push(p);
   }
-
-  // 現在時刻を初期化
-  int time = 0;
-
-  // ラウンドロビンスケジューリングを実行する
-  schedule(tasks, q, time);
-
+  int current_time = 0;
+  while (!A.empty()) {
+    Prosess p = A.front();
+    A.pop();
+    if (p.time <= q) {
+      current_time += p.time;
+      p.finish_time = current_time;
+      cout << p.name << " " << p.finish_time << endl;
+    } else {
+      current_time += q;
+      p.time -= q;
+      A.push(p);
+    }
+  }
   return 0;
 }

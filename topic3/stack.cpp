@@ -1,79 +1,36 @@
+#include <cstdio>
 #include <iostream>
+#include <stack>
 using namespace std;
-char rpn(char pol_f[100]);
 
-int c2i(char c);
-char i2c(int i);
-
-void push(char stack[100], int *sp, char c);
-char pop(char stack[100], int *sp);
-
-
-int main(void)
-{
-    char pol_f[100];
-    char dmy;
-
-    cin >> pol_f;
-    cin >> dmy;
-    //scanf("%s%c", pol_f, &dmy); 
-
-    cout << c2i(rpn(pol_f)) << endl;
-    //printf("Ans : %d\n", c2i(rpn(pol_f)));
-
-    return 0;
-}               
-
-char rpn(char pol_f[100])
-{
-    char stack[100];
-    int sp = 0;
-    int i;
-    char first, second;
-
-    for ( i = 0; pol_f[i] != '\0'; i++) {
-        if ( '9' >= pol_f[i] && pol_f[i] >= '1' ) {
-            push(stack,&sp,pol_f[i]);
-
-        } else {
-            if (pol_f[i] == '+') {
-                second = pop(stack, &sp);
-                first = pop(stack, &sp);
-                push(stack, &sp, i2c(c2i(first) + c2i(second)));
-            } else if  (pol_f[i] == '-') {
-                    second = pop(stack, &sp);
-                first = pop(stack, &sp);
-                push(stack, &sp, i2c(c2i(first) - c2i(second)));
-
-            } else if  (pol_f[i] == '*') {
-                    second = pop(stack, &sp);
-                first = pop(stack, &sp);
-                push(stack, &sp, i2c(c2i(first) * c2i(second)));
-            } 
-        }
+int main() {
+  stack<int> A;
+  string str;
+  getline(cin, str);
+  for (int i = 0; i < str.size(); i++) {
+    if (str[i] == ' ')
+      continue;
+    if (str[i] >= '0' && str[i] <= '9') {
+      int num = 0;
+      while (i < str.size() && str[i] >= '0' && str[i] <= '9') {
+        num = 10 * num + str[i] - '0';
+        i++;
+      }
+      i--;
+      A.push(num);
+    } else {
+      int a = A.top();
+      A.pop();
+      int b = A.top();
+      A.pop();
+      if (str[i] == '+')
+        A.push(a + b);
+      else if (str[i] == '-')
+        A.push(a - b);
+      else if (str[i] == '*')
+        A.push(a * b);
     }
-
-    return pop(stack, &sp);
-}
-
-int c2i(char c)
-{
-    return c - '0';
-}
-
-char i2c(int i)
-{
-    return '0' + i;
-}
-
-
-void push(char stack[100], int *sp, char c)
-{
-    stack[(*sp)++] = c;
-}
-
-char pop(char stack[100], int *sp)
-{
-    return stack[--*sp];    
-    
+  }
+  cout << A.top() << endl;
+  return 0;
 }
