@@ -22,7 +22,7 @@ void setDepth(int u, int d) {
 int setHeight(int u) {
   int h1 = 0, h2 = 0;
   if (T[u].l != NIL) {
-    h1 = setHeight(T[u].r) + 1;
+    h1 = setHeight(T[u].l) + 1;
   }
   if (T[u].r != NIL) {
     h2 = setHeight(T[u].r) + 1;
